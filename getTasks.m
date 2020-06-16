@@ -112,7 +112,8 @@ in
 
 
     addColumnTypeOfElement = Table.AddColumn(expandGroupsName, "Тип элемента", each if [element_type] = "2" then "Сделка" else if [element_type] = "1" then "Контакт" else if [element_type] = "3" then "Компания" else if [element_type] = "12" then "Покупатель" else "Неизвестно" ),
-    addColumnTypeOfElement = Table.AddColumn(expandGroupsName, "Тип задачи", each Record.Field([[task_type]], "text")), 
+    addColumnTaskType = Table.AddColumn(addColumnTaskType, "task_type", each Record.Field([[task_type]], "text")), 
+    replaceErrors = Table.ReplaceErrorValues(addColumnTaskType, {{"task_type", null}}),
     addColumnResultText = Table.AddColumn(addColumnTypeOfElement, "Result_Text", each Record.Field([result], "text")),
     replaceErrors = Table.ReplaceErrorValues(addColumnResultText, {{"Result_Text", null}}),
     delFinal = Table.RemoveColumns(replaceErrors,{"result"})
