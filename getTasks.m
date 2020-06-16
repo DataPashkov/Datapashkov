@@ -79,9 +79,7 @@ in
         timestampDateCreate = Table.AddColumn(expand2, "Date_create", each if [date_create] = 0 then null else #datetime(1970,1,1,0,0,0)+#duration(0,0,0,[date_create])),
         timestampDateModified = Table.AddColumn(timestampDateCreate, "Last_modified", each if [last_modified] = 0 then null else #datetime(1970,1,1,0,0,0)+#duration(0,0,0,[last_modified])),
     timestampDate_till = Table.AddColumn(timestampDateModified, "Deadline_Date", each if [complete_till] = 0 then null else #datetime(1970,1,1,0,0,0)+#duration(0,0,0,[complete_till])),
-        removeOldDates = Table.RemoveColumns(timestampDate_till,{"date_create", "last_modified"}),
-    removeOldDatesToText = Table.TransformColumnTypes(removeOldDates,{{"created_user_id", type text}, {"responsible_user_id", type text}, {"element_type", type text}, {"group_id", type text}}),
-
+   
 
         //merge со справочниками
         mergeWithCreateUserName = Table.NestedJoin(
@@ -114,7 +112,7 @@ in
     addColumnTypeOfElement = Table.AddColumn(expandGroupsName, "Тип элемента", each if [element_type] = "2" then "Сделка" else if [element_type] = "1" then "Контакт" else if [element_type] = "3" then "Компания" else if [element_type] = "12" then "Покупатель" else "Неизвестно" ),
     addColumnResultText = Table.AddColumn(addColumnTypeOfElement, "Result_Text", each Record.Field([result], "text")),
     replaceErrors = Table.ReplaceErrorValues(addColumnResultText, {{"Result_Text", null}}),
-delFinal = Table.RemoveColumns(replaceErrors,{"created_user_id", "responsible_user_id", "group_id", "result", "complete_till", "element_type"})
+    delFinal = Table.RemoveColumns(replaceErrors,{"created_user_id", "responsible_user_id", "group_id", "task_type", "result", "complete_till", "element_type"})
 in
     delFinal
 in
